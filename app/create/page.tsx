@@ -3,6 +3,10 @@
 import { useState } from "react";
 import StepIndicator from "@/components/create/StepIndicator";
 import NameStep from "@/components/create/NameStep";
+import PhotoStep from "@/components/create/PhotoStep";
+import DateStep from "@/components/create/DateStep";
+import IntroStep from "@/components/create/IntroStep";
+import ConfirmStep from "@/components/create/ConfirmStep";
 import type { MemoryForm } from "@/types/memory";
 
 export default function CreateMemoryPage() {
@@ -23,28 +27,47 @@ export default function CreateMemoryPage() {
       {step === 1 && (
         <NameStep
           value={form.name}
-          onChange={(value) =>
-            setForm({
-              ...form,
-              name: value,
-            })
-          }
+          onChange={(value) => setForm({ ...form, name: value })}
           onNext={() => setStep(2)}
         />
       )}
 
       {step === 2 && (
-        <section className="rounded-2xl bg-white p-6 shadow">
-          <h1 className="text-2xl font-bold">사진 업로드</h1>
-          <p className="mt-3 text-gray-600">다음 단계에서 만들 예정입니다.</p>
+        <PhotoStep onPrev={() => setStep(1)} onNext={() => setStep(3)} />
+      )}
 
-          <button
-            onClick={() => setStep(1)}
-            className="mt-6 w-full rounded-xl border py-4"
-          >
-            이전
-          </button>
-        </section>
+      {step === 3 && (
+        <DateStep
+          birthDate={form.birthDate}
+          deathDate={form.deathDate}
+          onBirthDateChange={(value) =>
+            setForm({ ...form, birthDate: value })
+          }
+          onDeathDateChange={(value) =>
+            setForm({ ...form, deathDate: value })
+          }
+          onPrev={() => setStep(2)}
+          onNext={() => setStep(4)}
+        />
+      )}
+
+      {step === 4 && (
+        <IntroStep
+          value={form.introduction}
+          onChange={(value) => setForm({ ...form, introduction: value })}
+          onPrev={() => setStep(3)}
+          onNext={() => setStep(5)}
+        />
+      )}
+
+      {step === 5 && (
+        <ConfirmStep
+          form={form}
+          onPrev={() => setStep(4)}
+          onSubmit={() => {
+            alert("추모관이 생성되었습니다!");
+          }}
+        />
       )}
     </main>
   );
