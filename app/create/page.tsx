@@ -53,8 +53,10 @@ export default function CreateMemoryPage() {
 
       {step === 4 && (
         <IntroStep
-          value={form.introduction}
-          onChange={(value) => setForm({ ...form, introduction: value })}
+          introduction={form.introduction}
+          onChange={(value) =>
+            setForm({ ...form, introduction: value })
+          }
           onPrev={() => setStep(3)}
           onNext={() => setStep(5)}
         />

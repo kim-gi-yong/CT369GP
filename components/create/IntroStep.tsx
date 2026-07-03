@@ -1,47 +1,42 @@
-type IntroStepProps = {
-  value: string;
+type Props = {
+  introduction: string;
   onChange: (value: string) => void;
   onPrev: () => void;
   onNext: () => void;
 };
 
 export default function IntroStep({
-  value,
+  introduction,
   onChange,
   onPrev,
   onNext,
-}: IntroStepProps) {
+}: Props) {
   return (
-    <section className="rounded-2xl bg-white p-6 shadow">
-      <h1 className="text-2xl font-bold">소개글 작성</h1>
+    <section className="rounded-3xl bg-white p-8 shadow">
+      <h2 className="text-4xl font-bold">소개글</h2>
 
-      <p className="mt-3 text-gray-600">
-        고인을 기억하는 소개글을 작성해주세요.
+      <p className="mt-2 text-gray-500">
+        고인을 소개해주세요.
       </p>
 
       <textarea
-        value={value}
+        value={introduction}
         onChange={(e) => onChange(e.target.value)}
-        rows={6}
-        placeholder="예: 사랑하는 가족과 친구들에게 따뜻한 기억으로 남아있는 분입니다."
-        className="mt-6 w-full rounded-xl border p-4 outline-none focus:border-blue-600"
+        placeholder="고인의 삶과 기억을 남겨주세요."
+        className="mt-6 h-56 w-full rounded-xl border p-4 resize-none"
       />
 
-      <p className="mt-2 text-right text-sm text-gray-500">
-        {value.length} / 500
-      </p>
-
-      <div className="mt-6 grid grid-cols-2 gap-3">
+      <div className="mt-8 flex gap-4">
         <button
           onClick={onPrev}
-          className="rounded-xl border py-4"
+          className="flex-1 rounded-xl border py-4"
         >
           이전
         </button>
 
         <button
           onClick={onNext}
-          className="rounded-xl bg-blue-600 py-4 text-white"
+          className="flex-1 rounded-xl bg-blue-600 py-4 text-white"
         >
           다음
         </button>

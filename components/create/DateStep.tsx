@@ -1,4 +1,4 @@
-type DateStepProps = {
+type Props = {
   birthDate: string;
   deathDate: string;
   onBirthDateChange: (value: string) => void;
@@ -14,17 +14,13 @@ export default function DateStep({
   onDeathDateChange,
   onPrev,
   onNext,
-}: DateStepProps) {
+}: Props) {
   return (
-    <section className="rounded-2xl bg-white p-6 shadow">
-      <h1 className="text-2xl font-bold">생년월일 입력</h1>
+    <section className="rounded-3xl bg-white p-8 shadow">
+      <h2 className="text-4xl font-bold">생몰년 입력</h2>
 
-      <p className="mt-3 text-gray-600">
-        생년월일과 별세일을 입력해주세요.
-      </p>
-
-      <div className="mt-6">
-        <label className="mb-2 block font-medium">생년월일</label>
+      <div className="mt-8">
+        <label className="block mb-2">생년월일</label>
         <input
           type="date"
           value={birthDate}
@@ -33,8 +29,8 @@ export default function DateStep({
         />
       </div>
 
-      <div className="mt-4">
-        <label className="mb-2 block font-medium">별세일</label>
+      <div className="mt-6">
+        <label className="block mb-2">기일</label>
         <input
           type="date"
           value={deathDate}
@@ -43,17 +39,17 @@ export default function DateStep({
         />
       </div>
 
-      <div className="mt-6 grid grid-cols-2 gap-3">
+      <div className="mt-8 flex gap-4">
         <button
           onClick={onPrev}
-          className="rounded-xl border py-4"
+          className="flex-1 rounded-xl border py-4"
         >
           이전
         </button>
 
         <button
           onClick={onNext}
-          className="rounded-xl bg-blue-600 py-4 text-white"
+          className="flex-1 rounded-xl bg-blue-600 py-4 text-white"
         >
           다음
         </button>
