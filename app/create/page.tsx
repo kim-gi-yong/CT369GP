@@ -1,76 +1,93 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import StepIndicator from "@/components/create/StepIndicator";
 import NameStep from "@/components/create/NameStep";
 import PhotoStep from "@/components/create/PhotoStep";
 import DateStep from "@/components/create/DateStep";
 import IntroStep from "@/components/create/IntroStep";
 import ConfirmStep from "@/components/create/ConfirmStep";
-import type { MemoryForm } from "@/types/memory";
+import { supabase } from "@/lib/supabase";
 
-export default function CreateMemoryPage() {
+export default function CreatePage() {
+  const router = useRouter();
+
   const [step, setStep] = useState(1);
+  const [name, setName] = useState("");
+  const [birthDate, setBirthDate] = useState("");
+  const [deathDate, setDeathDate] = useState("");
+  const [introduction, setIntroduction] = useState("");
 
-  const [form, setForm] = useState<MemoryForm>({
-    name: "",
-    birthDate: "",
-    deathDate: "",
-    introduction: "",
-    photo: null,
+  const next = () => setStep((prev) => Math.min(prev + 1, 5));
+  const prev = () => setStep((prev) => Math.max(prev - 1, 1));
+
+  const handleSubmit = async () => {
+    const { error } = await supabase
+  .from("memories")
+  .insert({
+    title: name,
+    subtitle: `${birthDate || ""} ~ ${deathDate || ""}`,
+    introduction,
+    theme: "추모관",
+    image_url: "",
   });
+    if (error) {
+      alert("저장 중 오류가 발생했습니다.");
+      console.error(error);
+      return;
+    }
+
+    alert("추모관이 생성되었습니다.");
+    router.push("/");
+  };
 
   return (
-    <main className="min-h-screen bg-gray-50 p-4">
-      <StepIndicator currentStep={step} totalSteps={5} />
+    <main className="min-h-screen bg-gray-50 px-6 py-10">
+      <div className="mx-auto max-w-xl">
+        <StepIndicator currentStep={step} totalSteps={5} />
 
-      {step === 1 && (
-        <NameStep
-          value={form.name}
-          onChange={(value) => setForm({ ...form, name: value })}
-          onNext={() => setStep(2)}
-        />
-      )}
+        <div className="mt-8">
+          {step === 1 && (
+            <NameStep name={name} onChange={setName} onNext={next} />
+          )}
 
-      {step === 2 && (
-        <PhotoStep onPrev={() => setStep(1)} onNext={() => setStep(3)} />
-      )}
+          {step === 2 && <PhotoStep onPrev={prev} onNext={next} />}
 
-      {step === 3 && (
-        <DateStep
-          birthDate={form.birthDate}
-          deathDate={form.deathDate}
-          onBirthDateChange={(value) =>
-            setForm({ ...form, birthDate: value })
-          }
-          onDeathDateChange={(value) =>
-            setForm({ ...form, deathDate: value })
-          }
-          onPrev={() => setStep(2)}
-          onNext={() => setStep(4)}
-        />
-      )}
+          {step === 3 && (
+            <DateStep
+              birthDate={birthDate}
+              deathDate={deathDate}
+              onBirthDateChange={setBirthDate}
+              onDeathDateChange={setDeathDate}
+              onPrev={prev}
+              onNext={next}
+            />
+          )}
 
-      {step === 4 && (
-        <IntroStep
-          introduction={form.introduction}
-          onChange={(value) =>
-            setForm({ ...form, introduction: value })
-          }
-          onPrev={() => setStep(3)}
-          onNext={() => setStep(5)}
-        />
-      )}
+          {step === 4 && (
+            <IntroStep
+              introduction={introduction}
+              onChange={setIntroduction}
+              onPrev={prev}
+              onNext={next}
+            />
+          )}
 
-      {step === 5 && (
-        <ConfirmStep
-          form={form}
-          onPrev={() => setStep(4)}
-          onSubmit={() => {
-            alert("추모관이 생성되었습니다!");
-          }}
-        />
-      )}
+          {step === 5 && (
+            <ConfirmStep
+              form={{
+                name,
+                birthDate,
+                deathDate,
+                introduction,
+              }}
+              onPrev={prev}
+              onSubmit={handleSubmit}
+            />
+          )}
+        </div>
+      </div>
     </main>
   );
 }
