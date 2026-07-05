@@ -1,0 +1,49 @@
+import Link from "next/link";
+
+export default function Footer() {
+  return (
+    <footer className="mt-20 border-t border-black/5 bg-white">
+      <div className="mx-auto max-w-6xl px-5 py-10">
+        <div className="mb-8">
+          <p className="text-xl font-extrabold text-[#14265b]">CT369Gp</p>
+          <p className="mt-2 text-sm text-gray-500">
+            요람에서 무덤까지, 삶의 모든 순간을 함께합니다.
+          </p>
+        </div>
+
+        <div className="grid gap-6 text-sm text-gray-500 sm:grid-cols-3">
+          <div>
+            <p className="mb-3 font-bold text-gray-900">Platform</p>
+            <div className="space-y-2">
+              <p>Memory Pixel</p>
+              <p>Moment Pixel</p>
+              <p>Pet Memorial</p>
+            </div>
+          </div>
+
+          <div>
+            <p className="mb-3 font-bold text-gray-900">Service</p>
+            <div className="space-y-2">
+              <p>Avatar World</p>
+              <p>Love Tree</p>
+              <p>Candle Memory</p>
+            </div>
+          </div>
+
+          <div>
+            <p className="mb-3 font-bold text-gray-900">Company</p>
+            <div className="space-y-2">
+              <Link href="/">회사소개</Link>
+              <Link href="/">이용약관</Link>
+              <Link href="/">개인정보처리방침</Link>
+            </div>
+          </div>
+        </div>
+
+        <p className="mt-10 text-xs text-gray-400">
+          © 2026 CT369Gp. All rights reserved.
+        </p>
+      </div>
+    </footer>
+  );
+}
