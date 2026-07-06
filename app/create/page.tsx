@@ -23,24 +23,31 @@ export default function CreatePage() {
   const prev = () => setStep((prev) => Math.max(prev - 1, 1));
 
   const handleSubmit = async () => {
-    const { error } = await supabase
-  .from("memories")
-  .insert({
-    title: name,
-    subtitle: `${birthDate || ""} ~ ${deathDate || ""}`,
-    introduction,
-    theme: "추모관",
-    image_url: "",
-  });
-    if (error) {
-      alert("저장 중 오류가 발생했습니다.");
-      console.error(error);
-      return;
-    }
+  if (!name.trim()) {
+    alert("이름을 입력해주세요.");
+    setStep(1);
+    return;
+  }
 
-    alert("추모관이 생성되었습니다.");
-    router.push("/");
-  };
+  const { error } = await supabase
+    .from("memories")
+    .insert({
+      title: name.trim(),
+      subtitle: `${birthDate || ""} ~ ${deathDate || ""}`,
+      introduction: introduction.trim(),
+      theme: "추모관",
+      image_url: "",
+    });
+
+  if (error) {
+    alert("저장 중 오류가 발생했습니다.");
+    console.error(error);
+    return;
+  }
+
+  alert("추모관이 생성되었습니다.");
+  router.push("/#memories");
+};
 
   return (
     <main className="min-h-screen bg-gray-50 px-6 py-10">

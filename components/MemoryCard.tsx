@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 type MemoryCardProps = {
-  memory: {
+  memory?: {
     id: string;
     title: string;
     subtitle?: string;
@@ -11,12 +11,15 @@ type MemoryCardProps = {
 };
 
 export default function MemoryCard({ memory }: MemoryCardProps) {
+  if (!memory) {
+    return null;
+  }
+
   return (
     <Link
       href={`/memory/${memory.id}`}
       className="group overflow-hidden rounded-[28px] bg-white shadow-md transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
     >
-      {/* 이미지 */}
       <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
         {memory.image_url ? (
           <img
@@ -27,19 +30,15 @@ export default function MemoryCard({ memory }: MemoryCardProps) {
         ) : (
           <div className="flex h-full flex-col items-center justify-center text-gray-400">
             <span className="text-5xl">📷</span>
-            <span className="mt-3 text-sm">
-              추억 사진을 등록하세요
-            </span>
+            <span className="mt-3 text-sm">추억 사진을 등록하세요</span>
           </div>
         )}
 
-        {/* 방문자 */}
         <div className="absolute left-4 top-4 rounded-full bg-black/50 px-3 py-1 text-xs text-white backdrop-blur">
           ❤️ 방문 0
         </div>
       </div>
 
-      {/* 내용 */}
       <div className="space-y-3 p-5">
         <h3 className="text-xl font-bold text-gray-900">
           {memory.title}
@@ -53,18 +52,15 @@ export default function MemoryCard({ memory }: MemoryCardProps) {
           {memory.introduction}
         </p>
 
-        {/* 하단 상태 */}
-        <div className="flex items-center justify-between border-t pt-4 text-sm">
-          <div className="flex items-center gap-2">
-            🕯️
-            <span>촛불</span>
-          </div>
-
-          <div className="flex items-center gap-2">
-            🌳
-            <span>사랑의 나무</span>
-          </div>
+        <div className="flex items-center justify-between border-t pt-4 text-sm font-medium text-gray-700">
+          <span>🕯️ 0</span>
+          <span>🌳 Lv.1</span>
+          <span>입장 →</span>
         </div>
+         
+       
+          
+        
       </div>
     </Link>
   );

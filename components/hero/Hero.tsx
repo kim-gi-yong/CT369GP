@@ -1,33 +1,29 @@
 export default function Hero() {
   return (
-    <section className="bg-[#162654] text-white px-6 pb-10">
-      <div className="mt-2">
-        <h2 className="text-5xl font-bold leading-tight">
-          Our <span className="text-yellow-400">Memory</span>
-          <br />
-          Spaces
-        </h2>
+    <section className="bg-gradient-to-b from-slate-50 to-white px-6 py-24 text-center">
+      <h1 className="text-4xl font-bold text-gray-900 md:text-6xl">
+        기억은 사라지지 않습니다.
+      </h1>
 
-        <p className="mt-4 text-lg tracking-wide text-gray-300">
-          Together, Every Memory Matters.
-        </p>
-      </div>
+      <p className="mx-auto mt-6 max-w-2xl text-lg text-gray-600">
+        Memory Pixel은 사랑하는 사람과 반려동물의 기억을
+        디지털 공간 안에 오래도록 남기는 추모 플랫폼입니다.
+      </p>
 
-      <div className="mt-8 grid grid-cols-3 gap-4">
-        <div className="rounded-2xl bg-white/10 p-4 text-center">
-          <p className="text-2xl font-bold text-yellow-400">5개</p>
-          <p className="mt-1 text-sm text-gray-300">추억 공간</p>
-        </div>
+      <div className="mt-10 flex justify-center gap-4">
+        <a
+          href="/create"
+          className="rounded-xl bg-gray-900 px-6 py-3 text-white"
+        >
+          추모공간 만들기
+        </a>
 
-        <div className="rounded-2xl bg-white/10 p-4 text-center">
-          <p className="text-2xl font-bold text-yellow-400">145명</p>
-          <p className="mt-1 text-sm text-gray-300">함께한 사람</p>
-        </div>
-
-        <div className="rounded-2xl bg-white/10 p-4 text-center">
-          <p className="text-2xl font-bold text-yellow-400">오늘</p>
-          <p className="mt-1 text-sm text-gray-300">새로운 마음</p>
-        </div>
+        <a
+          href="/explore"
+          className="rounded-xl border px-6 py-3 text-gray-800"
+        >
+          둘러보기
+        </a>
       </div>
     </section>
   );

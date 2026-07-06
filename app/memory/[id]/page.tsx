@@ -67,6 +67,30 @@ export default async function MemoryDetailPage({ params }: Props) {
                 {memory.introduction}
               </p>
             )}
+
+            <div className="mt-8 grid gap-3 sm:grid-cols-3">
+              <div className="rounded-2xl bg-[#F7F1E3] p-4 text-center">
+                <p className="text-xl font-bold text-[#0B1F3A]">❤️ 0</p>
+                <p className="text-xs text-gray-500">방문</p>
+              </div>
+
+              <div className="rounded-2xl bg-[#F7F1E3] p-4 text-center">
+                <p className="text-xl font-bold text-[#D4AF37]">🕯 0</p>
+                <p className="text-xs text-gray-500">촛불</p>
+              </div>
+
+              <div className="rounded-2xl bg-[#F7F1E3] p-4 text-center">
+                <p className="text-xl font-bold text-green-700">🌳 Lv.1</p>
+                <p className="text-xs text-gray-500">사랑나무</p>
+              </div>
+            </div>
+
+            <Link
+              href={`/avatar-world?memoryId=${memory.id}`}
+              className="mt-8 inline-flex w-full items-center justify-center rounded-full bg-[#0B1F3A] px-6 py-4 text-lg font-bold text-white shadow-lg hover:bg-[#132f55]"
+            >
+              🚪 Avatar World 입장하기 →
+            </Link>
           </div>
         </section>
       </div>

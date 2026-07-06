@@ -1,5 +1,15 @@
 import AvatarWorld from "@/components/world/AvatarWorld";
 
-export default function AvatarWorldPage() {
-  return <AvatarWorld />;
+type Props = {
+  searchParams: Promise<{
+    memoryId?: string;
+  }>;
+};
+
+export default async function AvatarWorldPage({
+  searchParams,
+}: Props) {
+  const { memoryId } = await searchParams;
+
+  return <AvatarWorld memoryId={memoryId} />;
 }
