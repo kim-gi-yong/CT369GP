@@ -1,5 +1,11 @@
 import WorldMap from "@/components/world/WorldMap";
 
-export default function AvatarWorld() {
-  return <WorldMap />;
+type AvatarWorldProps = {
+  memoryId?: string;
+};
+
+export default function AvatarWorld({
+  memoryId,
+}: AvatarWorldProps) {
+  return <WorldMap memoryId={memoryId} />;
 }

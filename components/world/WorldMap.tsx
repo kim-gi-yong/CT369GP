@@ -1,9 +1,93 @@
 "use client";
-
+import LoveTreeWorld from "./LoveTreeWorld";
 import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase";
 
-export default function WorldMap() {
+type WorldMapProps = {
+  memoryId?: string;
+};
+
+type Memory = {
+  id: string;
+  title: string;
+  subtitle?: string;
+  introduction?: string;
+  image_url?: string;
+  visitor_count?: number;
+  candle_count?: number;
+  love_tree_level?: number;
+};
+
+export default function WorldMap({ memoryId }: WorldMapProps) {
   const [position, setPosition] = useState({ x: 50, y: 58 });
+  const [memory, setMemory] = useState<Memory | null>(null);
+  const lightCandle = async () => {
+    if (!memory) return;
+
+    const nextCandle = (memory.candle_count ?? 0) + 1;
+
+    const nextTree =
+      nextCandle >= 300
+        ? 5
+        : nextCandle >= 100
+        ? 4
+        : nextCandle >= 30
+        ? 3
+        : nextCandle >= 10
+        ? 2
+        : 1;
+
+    const { data, error } = await supabase
+      .from("memories")
+      .update({
+        candle_count: nextCandle,
+        love_tree_level: nextTree,
+    })
+      .eq("id", memory.id)
+      .select()
+      .single();
+
+  if (error) {
+    return;
+  }
+
+  setMemory(data);
+};
+  useEffect(() => {
+    if (!memoryId) return;
+
+    const fetchAndCountVisit = async () => {
+      const { data, error } = await supabase
+        .from("memories")
+        .select("*")
+        .eq("id", memoryId)
+        .single();
+
+      if (error || !data) {
+        console.error("fetch error:", error);
+        return;
+      }
+
+      const nextVisitorCount = (data.visitor_count ?? 0) + 1;
+
+      const { data: updated, error: updateError } = await supabase
+        .from("memories")
+        .update({
+          visitor_count: nextVisitorCount,
+        })
+        .eq("id", memoryId)
+        .select()
+        .single();
+
+      if (updateError || !updated) {
+        return;
+      }
+
+      setMemory(updated);
+    };
+
+    fetchAndCountVisit();
+  }, [memoryId]);
 
   const moveAvatar = (direction: "up" | "down" | "left" | "right") => {
     setPosition((prev) => {
@@ -30,23 +114,27 @@ export default function WorldMap() {
       };
     });
   };
-  
+
   const nearMemory =
-  position.x >= 8 && position.x <= 35 && position.y >= 50 && position.y <= 78;
+    position.x >= 8 && position.x <= 35 && position.y >= 50 && position.y <= 78;
 
-const nearMoment =
-  position.x >= 65 && position.x <= 92 && position.y >= 50 && position.y <= 78;
+  const nearMoment =
+    position.x >= 65 && position.x <= 92 && position.y >= 50 && position.y <= 78;
 
-const nearPet =
-  position.x >= 38 && position.x <= 62 && position.y >= 65 && position.y <= 82;
+  const nearPet =
+    position.x >= 38 && position.x <= 62 && position.y >= 65 && position.y <= 82;
 
-const activeGate = nearMemory
-  ? { name: "Memory Hall", href: "/memory" }
-  : nearMoment
-  ? { name: "Moment Plaza", href: "/moment" }
-  : nearPet
-  ? { name: "Pet Garden", href: "/pet-memorial" }
-  : null;
+  const activeGate = nearMemory
+    ? {
+        name: "Memory Hall",
+        href: memoryId ? `/memory/${memoryId}` : "/memory",
+      }
+    : nearMoment
+    ? { name: "Moment Plaza", href: "/moment" }
+    : nearPet
+    ? { name: "Pet Garden", href: "/pet-memorial" }
+    : null;
+
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "ArrowUp" || event.key === "w" || event.key === "W") {
@@ -64,9 +152,10 @@ const activeGate = nearMemory
       if (event.key === "ArrowRight" || event.key === "d" || event.key === "D") {
         moveAvatar("right");
       }
-    if ((event.key === "e" || event.key === "E") && activeGate) {
-      window.location.href = activeGate.href;
-    }
+
+      if ((event.key === "e" || event.key === "E") && activeGate) {
+        window.location.href = activeGate.href;
+      }
     };
 
     window.addEventListener("keydown", handleKeyDown);
@@ -108,7 +197,7 @@ const activeGate = nearMemory
         className="left-1/2 bottom-[7%] -translate-x-1/2"
       />
 
-      <LoveTreeWorld />
+      <LoveTreeWorld level={memory?.love_tree_level ?? 1} />
 
       <div
         className="absolute z-20 -translate-x-1/2 -translate-y-1/2 transition-all duration-300"
@@ -124,19 +213,23 @@ const activeGate = nearMemory
           </div>
         </div>
       </div>
+
       {activeGate && (
-  <div className="absolute left-1/2 bottom-28 z-40 -translate-x-1/2 rounded-3xl bg-white/90 px-6 py-4 text-center shadow-2xl backdrop-blur">
-    <p className="text-sm text-slate-600">{activeGate.name} 근처입니다</p>
-    <button
-      onClick={() => {
-        window.location.href = activeGate.href;
-      }}
-      className="mt-2 rounded-full bg-indigo-600 px-5 py-2 text-sm font-bold text-white shadow-lg hover:bg-indigo-700"
-    >
-      E 키 또는 클릭으로 입장하기
-    </button>
-  </div>
-)}
+        <div className="absolute left-1/2 bottom-28 z-40 -translate-x-1/2 rounded-3xl bg-white/90 px-6 py-4 text-center shadow-2xl backdrop-blur">
+          <p className="text-sm text-slate-600">
+            {activeGate.name} 근처입니다
+          </p>
+          <button
+            onClick={() => {
+              window.location.href = activeGate.href;
+            }}
+            className="mt-2 rounded-full bg-indigo-600 px-5 py-2 text-sm font-bold text-white shadow-lg hover:bg-indigo-700"
+          >
+            E 키 또는 클릭으로 입장하기
+          </button>
+        </div>
+      )}
+
       <div className="absolute bottom-6 right-6 z-30 rounded-3xl bg-white/80 p-4 shadow-xl backdrop-blur">
         <p className="mb-3 text-center text-sm font-bold text-slate-800">
           Avatar Move
@@ -148,7 +241,7 @@ const activeGate = nearMemory
             ↑
           </button>
           <div />
-
+          
           <button onClick={() => moveAvatar("left")} className="move-btn">
             ←
           </button>
@@ -165,12 +258,46 @@ const activeGate = nearMemory
         <p className="text-xs font-bold tracking-[0.3em] text-indigo-700">
           CT369Gp
         </p>
+
         <h1 className="mt-1 text-2xl font-black text-slate-900">
           Avatar World
         </h1>
+
         <p className="mt-1 text-sm text-slate-700">
           기억과 축하가 이어지는 살아있는 월드
         </p>
+
+        {memory && (
+          <div className="mt-3 rounded-2xl bg-white/70 p-3">
+            <p className="text-sm font-bold text-slate-900">
+              故 {memory.title}
+            </p>
+
+            {memory.subtitle && (
+              <p className="mt-1 text-xs text-slate-600">
+                {memory.subtitle}
+              </p>
+            )}
+
+            {memory.introduction && (
+              <p className="mt-1 text-xs text-slate-700">
+                {memory.introduction}
+              </p>
+            )}
+
+            <p className="mt-2 text-xs font-bold text-slate-800">
+              ❤️ 방문 {memory.visitor_count ?? 0} · 🕯️ 촛불{" "}
+              {memory.candle_count ?? 0} · 🌳 Lv.
+              {memory.love_tree_level ?? 1}
+            <button
+              onClick={lightCandle}
+              className="mt-3 w-full rounded-xl bg-amber-500 py-2 font-bold text-white hover:bg-amber-600"
+            >
+              🕯️ 촛불 밝히기
+            </button>
+            </p>
+          </div>
+        )}
       </div>
     </section>
   );
@@ -198,13 +325,3 @@ function WorldBuilding({
   );
 }
 
-function LoveTreeWorld() {
-  return (
-    <div className="absolute left-1/2 top-[18%] z-10 -translate-x-1/2 text-center">
-      <div className="text-8xl drop-shadow-2xl">🌳</div>
-      <div className="mt-2 rounded-full bg-white/80 px-4 py-1 text-sm font-bold text-emerald-800 shadow">
-        Tree of Love
-      </div>
-    </div>
-  );
-}

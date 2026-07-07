@@ -7,13 +7,14 @@ type MemoryCardProps = {
     subtitle?: string;
     introduction?: string;
     image_url?: string;
+    visitor_count?: number;
+    candle_count?: number;
+    love_tree_level?: number;
   };
 };
 
 export default function MemoryCard({ memory }: MemoryCardProps) {
-  if (!memory) {
-    return null;
-  }
+  if (!memory) return null;
 
   return (
     <Link
@@ -34,8 +35,8 @@ export default function MemoryCard({ memory }: MemoryCardProps) {
           </div>
         )}
 
-        <div className="absolute left-4 top-4 rounded-full bg-black/50 px-3 py-1 text-xs text-white backdrop-blur">
-          ❤️ 방문 0
+        <div className="absolute left-4 top-4 rounded-full bg-black/60 px-4 py-2 text-xs font-bold text-white backdrop-blur">
+          ❤️ 방문 {memory.visitor_count ?? 0}
         </div>
       </div>
 
@@ -53,14 +54,10 @@ export default function MemoryCard({ memory }: MemoryCardProps) {
         </p>
 
         <div className="flex items-center justify-between border-t pt-4 text-sm font-medium text-gray-700">
-          <span>🕯️ 0</span>
-          <span>🌳 Lv.1</span>
+          <span>🕯️ {memory.candle_count ?? 0}</span>
+          <span>🌳 Lv.{memory.love_tree_level ?? 1}</span>
           <span>입장 →</span>
         </div>
-         
-       
-          
-        
       </div>
     </Link>
   );
