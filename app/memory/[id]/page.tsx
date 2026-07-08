@@ -102,12 +102,21 @@ export default async function MemoryDetailPage({ params }: Props) {
               </div>
             </div>
 
-            <Link
-              href={`/avatar-world?memoryId=${memory.id}`}
-              className="mt-8 inline-flex w-full items-center justify-center rounded-full bg-[#0B1F3A] px-6 py-4 text-lg font-bold text-white shadow-lg hover:bg-[#132f55]"
-            >
-              🚪 Avatar World 입장하기 →
-            </Link>
+            <div className="mt-8 grid gap-3 sm:grid-cols-2">
+              <Link
+                href={`/memory/${memory.id}/hall`}
+                className="inline-flex w-full items-center justify-center rounded-full bg-[#D4AF37] px-6 py-4 text-lg font-bold text-white shadow-lg hover:bg-[#b8921f]"
+              >
+                🏛 Memory Hall 입장하기 →
+              </Link>
+
+              <Link
+                href={`/avatar-world?memoryId=${memory.id}`}
+                className="inline-flex w-full items-center justify-center rounded-full bg-[#0B1F3A] px-6 py-4 text-lg font-bold text-white shadow-lg hover:bg-[#132f55]"
+              >
+                🚪 Avatar World 입장하기 →
+              </Link>
+            </div>
           </div>
         </section>
       </div>
