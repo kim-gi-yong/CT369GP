@@ -1,51 +1,48 @@
-type MemoryStatsProps = {
-  tributeCount: number;
+type Props = {
+  memory: {
+    visitor_count: number | null;
+    candle_count: number | null;
+    love_tree_level: number | null;
+  };
   flowerCount: number;
-  visitorCount: number;
+  candleCount: number;
 };
 
+
 export default function MemoryStats({
-  tributeCount,
+  memory,
   flowerCount,
-  visitorCount,
-}: MemoryStatsProps) {
+  candleCount,
+}: Props) {
   return (
-    <section className="mx-4 mt-6 rounded-xl bg-white p-5 shadow">
-      <h2 className="mb-4 text-lg font-bold">
-        오늘의 추모
-      </h2>
+    <section className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-4">
+      <div className="rounded-2xl bg-[#F8F5F0] p-5 text-center">
+        <p className="text-sm text-gray-500">🌹 헌화</p>
+        <p className="mt-2 text-3xl font-black text-[#D4AF37]">
+          {flowerCount}
+        </p>
+      </div>
 
-      <div className="grid grid-cols-3 gap-4 text-center">
-        <div>
-          <p className="text-3xl">❤️</p>
-          <p className="mt-2 text-xl font-bold">
-            {tributeCount}
-          </p>
-          <p className="text-gray-500">
-            추모
-          </p>
-        </div>
+      <div className="rounded-2xl bg-[#F8F5F0] p-5 text-center">
+        <p className="text-sm text-gray-500">🕯 촛불</p>
+        <p className="mt-2 text-3xl font-black text-[#D4AF37]">
+          {candleCount}
+        </p>
+      </div>
 
-        <div>
-          <p className="text-3xl">🕯️</p>
-          <p className="mt-2 text-xl font-bold">
-            {flowerCount}
-          </p>
-          <p className="text-gray-500">
-            헌화
-          </p>
-        </div>
+      <div className="rounded-2xl bg-[#F8F5F0] p-5 text-center">
+        <p className="text-sm text-gray-500">👥 방문자</p>
+        <p className="mt-2 text-3xl font-black text-[#0B1F3A]">
+          {memory.visitor_count ?? 0}
+        </p>
+      </div>
 
-        <div>
-          <p className="text-3xl">👥</p>
-          <p className="mt-2 text-xl font-bold">
-            {visitorCount}
-          </p>
-          <p className="text-gray-500">
-            방문
-          </p>
-        </div>
+      <div className="rounded-2xl bg-[#F8F5F0] p-5 text-center">
+        <p className="text-sm text-gray-500">🌳 사랑나무</p>
+        <p className="mt-2 text-3xl font-black text-green-700">
+          Lv.{memory.love_tree_level ?? 1}
+        </p>
       </div>
     </section>
-);
+  );
 }

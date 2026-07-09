@@ -1,8 +1,9 @@
 "use client";
+
 import LoveTreeWorld from "./LoveTreeWorld";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
-
+import CandleLight from "./CandleLight";
 type WorldMapProps = {
   memoryId?: string;
 };
@@ -21,72 +22,42 @@ type Memory = {
 export default function WorldMap({ memoryId }: WorldMapProps) {
   const [position, setPosition] = useState({ x: 50, y: 58 });
   const [memory, setMemory] = useState<Memory | null>(null);
-  const lightCandle = async () => {
+
+  async function lightCandle() {
     if (!memory) return;
 
-    const nextCandle = (memory.candle_count ?? 0) + 1;
+    await supabase.from("candles").insert({
+      memory_id: memory.id,
+      visitor_name: "방문자",
+    });
 
-    const nextTree =
-      nextCandle >= 300
-        ? 5
-        : nextCandle >= 100
-        ? 4
-        : nextCandle >= 30
-        ? 3
-        : nextCandle >= 10
-        ? 2
-        : 1;
+    const { count } = await supabase
+      .from("candles")
+      .select("*", { count: "exact", head: true })
+      .eq("memory_id", memory.id);
 
-    const { data, error } = await supabase
-      .from("memories")
-      .update({
-        candle_count: nextCandle,
-        love_tree_level: nextTree,
-    })
-      .eq("id", memory.id)
-      .select()
-      .single();
-
-  if (error) {
-    return;
+    setMemory({
+      ...memory,
+      candle_count: count ?? 0,
+    });
   }
 
-  setMemory(data);
-};
   useEffect(() => {
     if (!memoryId) return;
 
-    const fetchAndCountVisit = async () => {
+    async function fetchMemory() {
       const { data, error } = await supabase
         .from("memories")
         .select("*")
         .eq("id", memoryId)
         .single();
 
-      if (error || !data) {
-        console.error("fetch error:", error);
-        return;
-      }
+      if (error || !data) return;
 
-      const nextVisitorCount = (data.visitor_count ?? 0) + 1;
+      setMemory(data);
+    }
 
-      const { data: updated, error: updateError } = await supabase
-        .from("memories")
-        .update({
-          visitor_count: nextVisitorCount,
-        })
-        .eq("id", memoryId)
-        .select()
-        .single();
-
-      if (updateError || !updated) {
-        return;
-      }
-
-      setMemory(updated);
-    };
-
-    fetchAndCountVisit();
+    fetchMemory();
   }, [memoryId]);
 
   const moveAvatar = (direction: "up" | "down" | "left" | "right") => {
@@ -127,7 +98,7 @@ export default function WorldMap({ memoryId }: WorldMapProps) {
   const activeGate = nearMemory
     ? {
         name: "Memory Hall",
-        href: memoryId ? `/memory/${memoryId}` : "/memory",
+        href: memoryId ? `/memory/${memoryId}/hall` : "/",
       }
     : nearMoment
     ? { name: "Moment Plaza", href: "/moment" }
@@ -136,7 +107,7 @@ export default function WorldMap({ memoryId }: WorldMapProps) {
     : null;
 
   useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
+    function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "ArrowUp" || event.key === "w" || event.key === "W") {
         moveAvatar("up");
       }
@@ -156,7 +127,7 @@ export default function WorldMap({ memoryId }: WorldMapProps) {
       if ((event.key === "e" || event.key === "E") && activeGate) {
         window.location.href = activeGate.href;
       }
-    };
+    }
 
     window.addEventListener("keydown", handleKeyDown);
 
@@ -198,7 +169,15 @@ export default function WorldMap({ memoryId }: WorldMapProps) {
       />
 
       <LoveTreeWorld level={memory?.love_tree_level ?? 1} />
-
+       {Array.from({
+         length: memory?.candle_count ?? 0,
+       }).map((_, index) => (
+         <CandleLight
+           key={index}
+           x={18 + (index % 6) * 10}
+           y={68 + Math.floor(index / 6) * 8}
+         />
+       ))}
       <div
         className="absolute z-20 -translate-x-1/2 -translate-y-1/2 transition-all duration-300"
         style={{
@@ -241,7 +220,7 @@ export default function WorldMap({ memoryId }: WorldMapProps) {
             ↑
           </button>
           <div />
-          
+
           <button onClick={() => moveAvatar("left")} className="move-btn">
             ←
           </button>
@@ -289,13 +268,14 @@ export default function WorldMap({ memoryId }: WorldMapProps) {
               ❤️ 방문 {memory.visitor_count ?? 0} · 🕯️ 촛불{" "}
               {memory.candle_count ?? 0} · 🌳 Lv.
               {memory.love_tree_level ?? 1}
+            </p>
+
             <button
               onClick={lightCandle}
               className="mt-3 w-full rounded-xl bg-amber-500 py-2 font-bold text-white hover:bg-amber-600"
             >
               🕯️ 촛불 밝히기
             </button>
-            </p>
           </div>
         )}
       </div>
@@ -324,4 +304,3 @@ function WorldBuilding({
     </div>
   );
 }
-
